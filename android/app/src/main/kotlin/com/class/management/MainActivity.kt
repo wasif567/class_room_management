@@ -1,4 +1,4 @@
-package com.class.management
+package com.classroom.management
 
 import io.flutter.embedding.android.FlutterActivity
 

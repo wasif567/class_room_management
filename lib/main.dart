@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:management/provider/home_page_viewstate.dart';
+import 'package:management/view/pages/home_page/home_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,17 +14,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Class Room Management',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomePageViewstate()),
+      ],
+      child: MaterialApp(
+        title: 'Class Room Management',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+        ),
+        home: const HomePage(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
-
+/* 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -69,3 +77,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+ */
