@@ -8,14 +8,14 @@ class InternetHelper {
   final http.Client client;
   InternetHelper(this.client);
 
-  String baseUrl = 'https://nibrahim.pythonanywhere.com/';
+  String baseUrl = 'https://nibrahim.pythonanywhere.com';
 
   Future<http.Response> get(String url, {bool authorizedPost = true}) async {
     try {
       var header = {
         'Connection': 'keep-alive',
         'Content-Length': '32',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Server': 'PythonAnywhere',
       };
 
@@ -35,7 +35,7 @@ class InternetHelper {
       var header = {
         'Connection': 'keep-alive',
         'Content-Length': '32',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Server': 'PythonAnywhere',
       };
 
@@ -59,7 +59,7 @@ class InternetHelper {
       var header = {
         'Connection': 'keep-alive',
         'Content-Length': '32',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Server': 'PythonAnywhere',
       };
 

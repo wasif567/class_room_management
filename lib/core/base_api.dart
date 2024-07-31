@@ -1,11 +1,15 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:management/common/snack_bar_widget.dart';
+import 'package:management/internet_helper/url_endpoints.dart';
 import 'package:management/main.dart';
 
 class BaseApi {
   Dio? dio;
+
+  String apiKey = "?api_key=c16fB";
 
   BaseApi() {
     dio = Dio();
@@ -14,10 +18,12 @@ class BaseApi {
   Future get(url, {queryParameters, Map<String, dynamic>? headers}) async {
     try {
       Options options = Options(headers: headers);
+      String resUrl = AppUrls.baseUrl + url + apiKey;
+      Response response = await dio!.get(resUrl, queryParameters: queryParameters, options: options);
 
-      Response response = await dio!.get(url, queryParameters: queryParameters, options: options);
-
-      log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
+      if (kDebugMode) {
+        log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
+      }
 
       if (response.statusCode == 401) {
         await unAutherized();
@@ -77,7 +83,9 @@ class BaseApi {
       Options options = Options(
         headers: headers,
       );
-      Response response = await dio!.patch(url, data: data, options: options);
+      String resUrl = AppUrls.baseUrl + url + apiKey;
+
+      Response response = await dio!.patch(resUrl, data: data, options: options);
 
       log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
       if (response.statusCode == 401) {
@@ -101,7 +109,9 @@ class BaseApi {
   Future put(url, {queryParameters, data, Map<String, dynamic>? headers}) async {
     try {
       Options options = Options(headers: headers);
-      Response response = await dio!.put(url, data: data, queryParameters: queryParameters, options: options);
+      String resUrl = AppUrls.baseUrl + url + apiKey;
+      Response response =
+          await dio!.put(resUrl, data: data, queryParameters: queryParameters, options: options);
       if (response.statusCode == 401) {
         await unAutherized();
       } else {

@@ -77,34 +77,40 @@ class HomePage extends StatelessWidget {
             spacing: 10,
             runSpacing: 28,
             children: List.generate(state.modules.length, (index) {
-              return Container(
-                height: 216,
-                width: 175,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: state.modules[index].color,
-                ),
-                // color: Colors.teal,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Spacer(
-                      flex: 3,
-                    ),
-                    Image.asset(
-                      state.modules[index].icon,
-                      height: 48,
-                      width: 48,
-                      fit: BoxFit.cover,
-                    ),
-                    Text(
-                      state.modules[index].text,
-                      style: AppTypography.sfProMedium,
-                    ),
-                    const Spacer(
-                      flex: 2,
-                    ),
-                  ],
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => state.modules[index].route!));
+                },
+                child: Container(
+                  height: 216,
+                  width: 175,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: state.modules[index].color,
+                  ),
+                  // color: Colors.teal,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Spacer(
+                        flex: 3,
+                      ),
+                      Image.asset(
+                        state.modules[index].icon,
+                        height: 48,
+                        width: 48,
+                        fit: BoxFit.cover,
+                      ),
+                      Text(
+                        state.modules[index].text,
+                        style: AppTypography.sfProMedium,
+                      ),
+                      const Spacer(
+                        flex: 2,
+                      ),
+                    ],
+                  ),
                 ),
               );
             }),
@@ -121,17 +127,23 @@ class HomePage extends StatelessWidget {
           child: ListView.separated(
               padding: const EdgeInsets.only(top: 131),
               itemBuilder: (context, index) {
-                return Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: state.modules[index].color,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 13),
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    state.modules[index].text,
-                    style: AppTypography.sfProSemiBold.copyWith(fontSize: 17),
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => state.modules[index].route!));
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: state.modules[index].color,
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 13),
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      state.modules[index].text,
+                      style: AppTypography.sfProSemiBold.copyWith(fontSize: 17),
+                    ),
                   ),
                 );
               },

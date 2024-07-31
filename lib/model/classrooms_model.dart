@@ -13,14 +13,14 @@ class ClassroomModel {
   String layout;
   String name;
   int size;
-  String subject;
+  int? subject;
 
   ClassroomModel({
     required this.id,
     required this.layout,
     required this.name,
     required this.size,
-    required this.subject,
+    this.subject,
   });
 
   factory ClassroomModel.fromJson(Map<String, dynamic> json) => ClassroomModel(
