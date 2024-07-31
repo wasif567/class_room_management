@@ -39,16 +39,25 @@ class ClassRoomViewstate extends ChangeNotifier {
   Future getClassroomDetail(int id) async {
     try {
       isLoading = true;
+      subject = null;
+      classroom = null;
       Response response =
           await ManageApi().get("${AppUrls.classrooms}/$id").timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         classroom = ClassroomModel.fromJson(response.data);
+        if (classroom!.subject != null) {
+          Response subjectRes = await ManageApi()
+              .get("${AppUrls.subjects}/${classroom!.subject}")
+              .timeout(const Duration(seconds: 60));
+          if (subjectRes.statusCode == 200) {
+            subject = SubjectModel.fromJson(subjectRes.data);
+          }
+        }
       }
-
+      isLoading = false;
       if (response.statusCode == 500) {
         getClassroomDetail(id);
       }
-      isLoading = false;
     } catch (_) {
       return null;
     }

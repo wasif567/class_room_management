@@ -17,31 +17,36 @@ class ClassRoomDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final kSize = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: appBar(context),
-      body: SizedBox(
-        height: kSize.height,
-        width: kSize.width,
-        child: SingleChildScrollView(
-          child: Consumer<ClassRoomViewstate>(builder: (context, state, child) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  if (state.classroom != null) changeSubjectBtn(context, state.classroom!),
-                  if (state.classroom != null && state.classroom!.layout == 'conference') ...{
-                    conferenceLayOut(state.classroom!.size)
-                  },
-                  if (state.classroom != null && state.classroom!.layout == 'classroom') ...{
-                    classRoomLayOut(state.classroom!.size)
-                  },
-                ],
-              ),
-            );
-          }),
+    return Consumer<ClassRoomViewstate>(builder: (context, state, child) {
+      return Scaffold(
+        appBar: appBar(context),
+        body: SizedBox(
+          height: kSize.height,
+          width: kSize.width,
+          child: state.isLoading!
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: AppColors.greenColor,
+                ))
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        if (state.classroom != null) changeSubjectBtn(context, state.classroom!),
+                        if (state.classroom != null && state.classroom!.layout == 'conference') ...{
+                          conferenceLayOut(state.classroom!.size)
+                        },
+                        if (state.classroom != null && state.classroom!.layout == 'classroom') ...{
+                          classRoomLayOut(state.classroom!.size)
+                        },
+                      ],
+                    ),
+                  ),
+                ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget changeSubjectBtn(BuildContext context, ClassroomModel classDetail) {
