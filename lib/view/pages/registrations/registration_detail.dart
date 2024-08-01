@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:management/common/snack_bar_widget.dart';
-import 'package:management/main.dart';
 import 'package:management/provider/registration_viewstate.dart';
 import 'package:management/view/app_theme/app_colors.dart';
 import 'package:management/view/app_theme/app_typography.dart';

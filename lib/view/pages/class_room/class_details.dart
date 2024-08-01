@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:management/common/snack_bar_widget.dart';
 import 'package:management/model/classrooms_model.dart';
 import 'package:management/model/subjects_model.dart';
 import 'dart:math' as math;

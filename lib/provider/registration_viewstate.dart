@@ -8,7 +8,6 @@ import 'package:management/model/registrations_model.dart';
 import 'package:management/model/students_model.dart';
 import 'package:management/model/subjects_model.dart';
 import 'package:management/view/app_theme/app_colors.dart';
-import 'package:management/view/app_theme/app_typography.dart';
 
 class RegistrationViewstate extends ChangeNotifier {
   List<RegistrationModel>? _regList;
