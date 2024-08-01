@@ -3,6 +3,7 @@ import 'package:management/provider/registration_viewstate.dart';
 import 'package:management/view/app_theme/app_colors.dart';
 import 'package:management/view/app_theme/app_typography.dart';
 import 'package:management/view/common_components/back_btn.dart';
+import 'package:management/view/pages/registrations/new_registration.dart';
 import 'package:provider/provider.dart';
 
 class RegistrationList extends StatelessWidget {
@@ -17,19 +18,48 @@ class RegistrationList extends StatelessWidget {
         height: kSize.height,
         width: kSize.width,
         child: Column(
-          children: [],
+          children: [
+            regList(context),
+            newRegBtn(),
+          ],
         ),
       ),
     );
   }
 
+  Widget newRegBtn() {
+    return Consumer<RegistrationViewstate>(builder: (context, state, child) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 16, bottom: 45.0),
+        child: TextButton(
+            style: TextButton.styleFrom(
+                backgroundColor: AppColors.blueColor.withOpacity(0.2),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            onPressed: () {
+              state.registrationData();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const NewRegistration()));
+            },
+            child: Text(
+              "New Registration",
+              style: AppTypography.sfProMedium.copyWith(
+                color: AppColors.blueColor,
+                fontSize: 17,
+              ),
+            )),
+      );
+    });
+  }
+
   Widget regList(BuildContext context) {
     return Consumer<RegistrationViewstate>(builder: (context, state, child) {
       return Expanded(
-        child: state.regList == null && state.regList!.isEmpty
-            ? Text(
-                "No Registrations",
-                style: AppTypography.sfProRegular.copyWith(fontSize: 17),
+        child: state.regList == null || (state.regList != null && state.regList!.isEmpty)
+            ? Center(
+                child: Text(
+                  "No Registrations",
+                  style: AppTypography.sfProRegular.copyWith(fontSize: 17),
+                ),
               )
             : ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -37,12 +67,18 @@ class RegistrationList extends StatelessWidget {
                   return DecoratedBox(
                     decoration:
                         BoxDecoration(color: AppColors.greyColor, borderRadius: BorderRadius.circular(10)),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Text("${state.regList![index].student}"),
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 32,
+                    child: InkWell(
+                      onTap: () {},
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                        leading: Text(
+                          "Registration Id : ${state.regList![index].id}",
+                          style: AppTypography.sfProRegular.copyWith(fontSize: 17),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 24,
+                        ),
                       ),
                     ),
                   );

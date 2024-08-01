@@ -7,7 +7,8 @@ import 'package:management/view/pages/subject/subject_detail.dart';
 import 'package:provider/provider.dart';
 
 class SubjectList extends StatelessWidget {
-  const SubjectList({super.key});
+  final bool? isReg;
+  const SubjectList({super.key, this.isReg});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +42,8 @@ class SubjectList extends StatelessWidget {
                           child: InkWell(
                             onTap: () {
                               if (subjectViewState.isFromClass) {
+                                Navigator.pop(context, snapshot.data![index]);
+                              } else if (isReg!) {
                                 Navigator.pop(context, snapshot.data![index]);
                               } else {
                                 Navigator.push(

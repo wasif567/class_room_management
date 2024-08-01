@@ -51,8 +51,8 @@ class BaseApi {
       );
 
       log('Form = $data');
-
-      Response response = await dio!.post(url, data: data, options: options);
+      String resUrl = AppUrls.baseUrl + url + apiKey;
+      Response response = await dio!.post(resUrl, data: data, options: options);
 
       log('status code = ${response.statusCode}\nresponse == ${response.data.toString()}', name: url);
 

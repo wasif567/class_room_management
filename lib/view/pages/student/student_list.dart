@@ -7,7 +7,8 @@ import 'package:management/view/pages/student/student_detail.dart';
 import 'package:provider/provider.dart';
 
 class StudentList extends StatelessWidget {
-  const StudentList({super.key});
+  final bool? isReg;
+  const StudentList({super.key, this.isReg = false});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +41,14 @@ class StudentList extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 13),
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => StudentDetail(id: snapshot.data![index].id)));
+                              if (isReg!) {
+                                Navigator.pop(context, snapshot.data![index]);
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => StudentDetail(id: snapshot.data![index].id)));
+                              }
                             },
                             child: ListTile(
                               minVerticalPadding: 0,
