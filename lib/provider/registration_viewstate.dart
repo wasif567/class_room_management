@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:management/common/snack_bar_widget.dart';
 import 'package:management/core/base_api_utilities.dart';
 import 'package:management/core/manage_api.dart';
 import 'package:management/internet_helper/url_endpoints.dart';
 import 'package:management/model/registrations_model.dart';
 import 'package:management/model/students_model.dart';
 import 'package:management/model/subjects_model.dart';
+import 'package:management/view/app_theme/app_colors.dart';
 import 'package:management/view/app_theme/app_typography.dart';
 
 class RegistrationViewstate extends ChangeNotifier {
@@ -48,34 +50,49 @@ class RegistrationViewstate extends ChangeNotifier {
   Future getRegisteredDetail(int id) async {
     try {
       isLoading = true;
-      RegistrationModel? reg;
+      registration = null;
+      selectedStudent = null;
+      selectedSubject = null;
       Response response =
           await ManageApi().get("${AppUrls.registration}/$id").timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
-        reg = RegistrationModel.fromJson(response.data);
-        if (reg.id > 0) {
-          registration = reg;
-        }
+        registration = RegistrationModel.fromJson(response.data);
+        registrationData();
+        selectedStudent = studentList!.firstWhere((student) => student.id == registration!.student);
+        selectedSubject = subjectList!.firstWhere((subject) => subject.id == registration!.subject);
       }
       isLoading = false;
     } catch (_) {}
   }
 
-  deleteRegistration(int id) async {
+  Future deleteRegistration(int id, BuildContext context) async {
     try {
-      Response response = await ManageApi()
-          .delete(
-            "${AppUrls.registration}/$id",
-          )
-          .timeout(const Duration(seconds: 60));
+      Response response =
+          await ManageApi().delete("${AppUrls.registration}/$id").timeout(const Duration(seconds: 60));
       if (response.statusCode == 200) {
         getRegistrationList();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Deleted Registration Successfully',
+              color: AppColors.greenColor, duration: const Duration(seconds: 3)));
+        }
+        return true;
       }
-    } catch (_) {}
+      return false;
+    } catch (_) {
+      return false;
+    }
   }
 
-  newRegistration() async {
+  bool? _isRegLoading;
+  bool? get isRegLoading => _isRegLoading;
+  set isRegLoading(bool? val) {
+    _isRegLoading = val;
+    notifyListeners();
+  }
+
+  Future newRegistration(BuildContext context) async {
     try {
+      isRegLoading = true;
       if (selectedStudent != null && selectedSubject != null) {
         var data = {
           'student': selectedStudent!.id,
@@ -85,19 +102,18 @@ class RegistrationViewstate extends ChangeNotifier {
             await ManageApi().post("${AppUrls.registration}/", data: data, headers: apiHeaders());
         if (response.statusCode == 200) {
           getRegistrationList();
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Registered Successfully',
+                color: AppColors.greenColor, duration: const Duration(seconds: 3)));
+          }
           return true;
         }
         return false;
       } else {
-        ScaffoldMessengerState().showSnackBar(SnackBar(
-          content: Text(
-            "Select Student & Subject",
-            style: AppTypography.sfProMedium.copyWith(
-              fontSize: 16,
-            ),
-          ),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Select Student & Subject',
+            color: AppColors.orangeColor, duration: const Duration(seconds: 3)));
       }
+      isRegLoading = false;
     } catch (_) {
       return false;
     }
@@ -132,6 +148,10 @@ class RegistrationViewstate extends ChangeNotifier {
   }
 
   registrationData() async {
+    selectedStudent = null;
+    selectedSubject = null;
+    isRegLoading = false;
+    isLoading = false;
     Response studentRes = await ManageApi().get(AppUrls.students);
     studentList = (studentRes.data['students'] as List).map((e) => StudentModel.fromJson(e)).toList();
     Response subjectRes = await ManageApi().get(AppUrls.subjects);

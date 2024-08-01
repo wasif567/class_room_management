@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:management/common/snack_bar_widget.dart';
 import 'package:management/core/base_api_utilities.dart';
 import 'package:management/core/manage_api.dart';
 import 'package:management/internet_helper/url_endpoints.dart';
 import 'package:management/model/classrooms_model.dart';
 import 'package:management/model/subjects_model.dart';
+import 'package:management/view/app_theme/app_colors.dart';
 
 class ClassRoomViewstate extends ChangeNotifier {
   Future<List<ClassroomModel>> getClassList() async {
@@ -70,7 +72,7 @@ class ClassRoomViewstate extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateSubject(ClassroomModel classDetail) async {
+  Future updateSubject(ClassroomModel classDetail, BuildContext context) async {
     try {
       Response response = await ManageApi().patch("${AppUrls.classrooms}/${classDetail.id}",
           headers: apiHeaders(), data: {"subject": classDetail.subject}).timeout(const Duration(seconds: 60));
@@ -82,19 +84,31 @@ class ClassRoomViewstate extends ChangeNotifier {
             .timeout(const Duration(seconds: 60));
         if (subjectRes.statusCode == 200) {
           subject = SubjectModel.fromJson(subjectRes.data);
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(snackBarWidget('Subject Updated',
+                color: AppColors.greenColor, duration: const Duration(seconds: 3)));
+          }
+          return true;
         }
         if (subjectRes.statusCode == 500) {
           Response subjectRes = await ManageApi()
               .get("${AppUrls.subjects}/${classroom!.subject}")
               .timeout(const Duration(seconds: 60));
+
           if (subjectRes.statusCode == 200) {
             subject = SubjectModel.fromJson(subjectRes.data);
+            return true;
           }
         }
       }
       if (response.statusCode == 500) {
-        updateSubject(classDetail);
+        if (context.mounted) {
+          updateSubject(classDetail, context);
+          return false;
+        }
       }
-    } catch (_) {}
+    } catch (_) {
+      return false;
+    }
   }
 }

@@ -129,7 +129,8 @@ class BaseApi {
   Future delete(url, {data, Map<String, dynamic>? headers}) async {
     try {
       Options options = Options(headers: headers);
-      Response response = await dio!.delete(url, data: data, options: options);
+      String resUrl = AppUrls.baseUrl + url + apiKey ;
+      Response response = await dio!.delete(resUrl, data: data, options: options);
       if (response.statusCode == 401) {
         await unAutherized();
       } else {

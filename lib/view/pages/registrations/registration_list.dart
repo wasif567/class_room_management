@@ -4,6 +4,7 @@ import 'package:management/view/app_theme/app_colors.dart';
 import 'package:management/view/app_theme/app_typography.dart';
 import 'package:management/view/common_components/back_btn.dart';
 import 'package:management/view/pages/registrations/new_registration.dart';
+import 'package:management/view/pages/registrations/registration_detail.dart';
 import 'package:provider/provider.dart';
 
 class RegistrationList extends StatelessWidget {
@@ -54,39 +55,56 @@ class RegistrationList extends StatelessWidget {
   Widget regList(BuildContext context) {
     return Consumer<RegistrationViewstate>(builder: (context, state, child) {
       return Expanded(
-        child: state.regList == null || (state.regList != null && state.regList!.isEmpty)
-            ? Center(
-                child: Text(
-                  "No Registrations",
-                  style: AppTypography.sfProRegular.copyWith(fontSize: 17),
+        child: state.isLoading!
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.green,
                 ),
               )
-            : ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemBuilder: (context, index) {
-                  return DecoratedBox(
-                    decoration:
-                        BoxDecoration(color: AppColors.greyColor, borderRadius: BorderRadius.circular(10)),
-                    child: InkWell(
-                      onTap: () {},
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                        leading: Text(
-                          "Registration Id : ${state.regList![index].id}",
-                          style: AppTypography.sfProRegular.copyWith(fontSize: 17),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 24,
-                        ),
-                      ),
+            : state.regList == null || (state.regList != null && state.regList!.isEmpty)
+                ? Center(
+                    child: Text(
+                      "No Registrations",
+                      style: AppTypography.sfProRegular.copyWith(fontSize: 17),
                     ),
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const Padding(padding: EdgeInsets.only(bottom: 16));
-                },
-                itemCount: state.regList!.length),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: ListView.separated(
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                        itemBuilder: (context, index) {
+                          return DecoratedBox(
+                            decoration: BoxDecoration(
+                                color: AppColors.greyColor, borderRadius: BorderRadius.circular(10)),
+                            child: InkWell(
+                              onTap: () async {
+                                if (!state.isLoading!) {
+                                  if (context.mounted) {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) => const RegistrationDetail()));
+                                  }
+                                  await state.getRegisteredDetail(state.regList![index].id);
+                                }
+                              },
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                                leading: Text(
+                                  "Registration Id : ${state.regList![index].id}",
+                                  style: AppTypography.sfProRegular.copyWith(fontSize: 17),
+                                ),
+                                trailing: const Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return const Padding(padding: EdgeInsets.only(bottom: 16));
+                        },
+                        itemCount: state.regList!.length),
+                  ),
       );
     });
   }
@@ -96,7 +114,7 @@ class RegistrationList extends StatelessWidget {
     return AppBar(
       leading: const CustomBackBtn(),
       bottom: PreferredSize(
-          preferredSize: Size(kSize.width, kSize.height * 0.1),
+          preferredSize: Size(kSize.width, kSize.height * 0.05),
           child: Text(
             "Registration",
             style: AppTypography.sfProBold.copyWith(fontSize: 22),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:management/common/snack_bar_widget.dart';
 import 'package:management/model/classrooms_model.dart';
 import 'package:management/model/subjects_model.dart';
 import 'dart:math' as math;
@@ -65,12 +66,12 @@ class ClassRoomDetail extends StatelessWidget {
                 SubjectPageViewstate viewstate = Provider.of<SubjectPageViewstate>(context, listen: false);
                 viewstate.isFromClass = true;
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const SubjectList()))
-                    .then((value) {
+                    .then((value) async {
                   if (value != null) {
                     //
                     SubjectModel sub = value;
                     classDetail.subject = sub.id;
-                    state.updateSubject(classDetail);
+                    await state.updateSubject(classDetail, context);
                   }
                 });
               },

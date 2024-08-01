@@ -67,16 +67,18 @@ class NewRegistration extends StatelessWidget {
           decoration: BoxDecoration(color: AppColors.greyColor, borderRadius: BorderRadius.circular(10)),
           child: InkWell(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const StudentList(
-                            isReg: true,
-                          ))).then((value) {
-                if (value != null) {
-                  state.selectedStudent = value;
-                }
-              });
+              if (!state.isRegLoading!) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StudentList(
+                              isReg: true,
+                            ))).then((value) {
+                  if (value != null) {
+                    state.selectedStudent = value;
+                  }
+                });
+              }
             },
             child: ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
@@ -99,21 +101,33 @@ class NewRegistration extends StatelessWidget {
     return Consumer<RegistrationViewstate>(builder: (context, state, child) {
       return Padding(
         padding: const EdgeInsets.only(top: 30, bottom: 45.0),
-        child: TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: AppColors.greenColor,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            onPressed: () {
-              state.newRegistration();
-            },
-            child: Text(
-              "Register",
-              style: AppTypography.sfProMedium.copyWith(
-                color: Colors.white,
-                fontSize: 17,
-              ),
-            )),
+        child: state.isRegLoading!
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: AppColors.greenColor,
+                ),
+              )
+            : TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: AppColors.greenColor,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                onPressed: () async {
+                  if (!state.isRegLoading!) {
+                    await state.newRegistration(context).then((value) {
+                      if (value) {
+                        Navigator.pop(context);
+                      }
+                    });
+                  }
+                },
+                child: Text(
+                  "Register",
+                  style: AppTypography.sfProMedium.copyWith(
+                    color: Colors.white,
+                    fontSize: 17,
+                  ),
+                )),
       );
     });
   }
